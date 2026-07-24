@@ -544,6 +544,7 @@ function GameScreen({
             position={runner.visualPosition}
             trail={runner.trail}
             status={runner.engine.status}
+            speed={runner.speed}
           />
 
           <div className="status-console" role="status" aria-live="polite">

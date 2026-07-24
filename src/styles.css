@@ -1052,10 +1052,13 @@ main {
 }
 
 .board-grid {
+  --board-gap: clamp(5px, 1vw, 9px);
+
+  position: relative;
   display: grid;
   grid-template-columns: repeat(var(--board-columns), minmax(54px, 88px));
   grid-template-rows: repeat(var(--board-rows), minmax(54px, 88px));
-  gap: clamp(5px, 1vw, 9px);
+  gap: var(--board-gap);
   align-self: center;
   justify-content: center;
   width: 100%;
@@ -1186,24 +1189,128 @@ main {
   font-weight: 800;
 }
 
+.frog-jump-track {
+  position: relative;
+  z-index: 8;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.frog-jump-track--jumping {
+  animation: frog-travel var(--jump-duration) cubic-bezier(0.42, 0, 0.58, 1) both;
+}
+
+.frog-jump-track--jumping::after {
+  position: absolute;
+  bottom: 9%;
+  left: 50%;
+  width: 58%;
+  height: 18%;
+  border: 3px solid rgba(58, 123, 65, 0.55);
+  border-radius: 50%;
+  content: "";
+  opacity: 0;
+  transform: translateX(-50%) scale(0.25);
+  animation: frog-impact var(--jump-duration) ease-out both;
+}
+
+@keyframes frog-travel {
+  from {
+    transform: translate(var(--jump-x), var(--jump-y));
+  }
+
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes frog-impact {
+  0%,
+  72% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.25);
+  }
+
+  78% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.35);
+  }
+}
+
 .frog {
   position: relative;
-  z-index: 5;
+  z-index: 2;
   display: inline-block;
   width: 78%;
   height: 78%;
   filter: drop-shadow(0 10px 5px rgba(23, 35, 28, 0.26));
-  animation: frog-land 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes frog-land {
-  from {
-    opacity: 0.6;
-    transform: translateY(-26px) scale(0.84);
-  }
+.frog:not(.frog--jumping, .frog--success) .frog-sprite__body {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: frog-idle 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes frog-idle {
   to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(1.5px) scale(1.015, 0.985);
+  }
+}
+
+.frog--jumping .frog-sprite__body {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: frog-body-hop var(--jump-duration) cubic-bezier(0.35, 0, 0.25, 1) both;
+}
+
+.frog--jumping .frog-sprite__shadow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: frog-shadow-hop var(--jump-duration) ease-in-out both;
+}
+
+@keyframes frog-body-hop {
+  0% {
+    transform: translateY(3px) scale(1.13, 0.72);
+  }
+
+  12% {
+    transform: translateY(-8px) scale(0.92, 1.16);
+  }
+
+  52% {
+    transform: translateY(calc(-1 * var(--jump-height))) rotate(var(--jump-tilt))
+      scale(0.98, 1.06);
+  }
+
+  84% {
+    transform: translateY(-7px) rotate(0deg) scale(0.94, 1.11);
+  }
+
+  100% {
+    transform: translateY(3px) scale(1.14, 0.7);
+  }
+}
+
+@keyframes frog-shadow-hop {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scale(1.08);
+  }
+
+  52% {
+    opacity: 0.08;
+    transform: scale(0.42);
   }
 }
 
