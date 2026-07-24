@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { EngineState, Position, Stage } from '../engine/types';
 import type { TrailPoint } from '../hooks/useGameRunner';
+import { FrogSprite, GameIcon } from './GameIcons';
 
 type BoardProps = {
   stage: Stage;
@@ -50,7 +51,7 @@ export function Board({ stage, position, trail, status }: BoardProps) {
             )}
             {hazard && (
               <span className={`hazard-marker hazard-marker--${hazardType}`}>
-                {hazardType === 'spikes' ? '▲▲' : ''}
+                {hazardType === 'spikes' && <GameIcon name="spikes" size={42} />}
               </span>
             )}
             {visit && visit.order > 0 && !hasFrog && (
@@ -58,7 +59,11 @@ export function Board({ stage, position, trail, status }: BoardProps) {
                 className={`visit-marker visit-marker--${visit.kind}`}
                 title={`${visit.order}번째 행동`}
               >
-                {visit.kind === 'wait' ? '•' : visit.order}
+                {visit.kind === 'wait' ? (
+                  <GameIcon name="pause" size={10} />
+                ) : (
+                  visit.order
+                )}
               </span>
             )}
             {hasFrog && (
@@ -67,7 +72,7 @@ export function Board({ stage, position, trail, status }: BoardProps) {
                 role="img"
                 aria-label="개구리"
               >
-                🐸
+                <FrogSprite />
               </span>
             )}
             <span className="tile__coordinate">

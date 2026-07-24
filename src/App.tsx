@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BlockEditor } from './components/BlockEditor';
 import { Board } from './components/Board';
+import { FrogSprite, GameIcon } from './components/GameIcons';
 import { cloneBlocks, stages } from './data/stages';
 import { failureText, lineCount, validate } from './engine/engine';
 import type { Block, Stage } from './engine/types';
@@ -23,7 +24,7 @@ function Logo() {
   return (
     <div className="brand" aria-label="CueHop">
       <span className="brand__mark" aria-hidden="true">
-        <b>🐸</b>
+        <FrogSprite />
       </span>
       <span className="brand__word">
         Cue<strong>Hop</strong>
@@ -37,7 +38,7 @@ function Stars({ count, compact = false }: { count: number; compact?: boolean })
     <span className={`stars ${compact ? 'stars--compact' : ''}`} aria-label={`별 ${count}개`}>
       {[1, 2, 3].map((star) => (
         <span className={star <= count ? 'stars__earned' : ''} key={star}>
-          ★
+          <GameIcon name="star" size={compact ? 16 : 28} />
         </span>
       ))}
     </span>
@@ -69,7 +70,10 @@ function AppHeader({
           튜토리얼
         </button>
         <span className="progress-pill">
-          <b>★</b> {totalStars}
+          <b>
+            <GameIcon name="star" size={14} />
+          </b>
+          {totalStars}
           <i>/ 15</i>
         </span>
       </nav>
@@ -94,7 +98,7 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
         <div className="landing__actions">
           <button className="button button--primary button--large" onClick={onStart}>
             튜토리얼 시작
-            <span>→</span>
+            <GameIcon name="arrow-right" size={18} />
           </button>
           <span>5개 스테이지 · 약 10분</span>
         </div>
@@ -124,7 +128,11 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
         <div className="demo-route">
           {[0, 1, 2, 3, 4].map((cell) => (
             <div className={cell === 4 ? 'demo-route__goal' : ''} key={cell}>
-              {cell === 2 && <span>🐸</span>}
+              {cell === 2 && (
+                <span>
+                  <FrogSprite />
+                </span>
+              )}
               {cell === 4 && <i />}
             </div>
           ))}
@@ -231,9 +239,14 @@ function StageSelect({
                 <p>{stage.objective}</p>
               </div>
               <div className="stage-card__meta">
-                <span>⚡ {stage.energy}</span>
+                <span>
+                  <GameIcon name="lightning" size={12} /> {stage.energy}
+                </span>
                 <span>목표 {stage.targetTicks}틱</span>
-                <b>{stars > 0 ? '다시 플레이' : '시작하기'} →</b>
+                <b>
+                  {stars > 0 ? '다시 플레이' : '시작하기'}
+                  <GameIcon name="arrow-right" size={12} />
+                </b>
               </div>
             </button>
           );
@@ -286,7 +299,8 @@ function RunControls({
       <div className="run-controls run-controls--finished">
         <div className="run-controls__secondary">
           <button type="button" onClick={onRestart} disabled={disabled}>
-            ↻ 같은 프로그램 다시 실행
+            <GameIcon name="reset" size={14} />
+            같은 프로그램 다시 실행
           </button>
           <button type="button" onClick={onSpeed}>
             속도 <b>×{speed}</b>
@@ -306,17 +320,17 @@ function RunControls({
             onClick={onRun}
             disabled={disabled}
           >
-            <span>▶</span> 실행
+            <GameIcon name="play" size={17} /> 실행
           </button>
         )}
         {phase === 'running' && (
           <button className="button button--pause" type="button" onClick={onPause}>
-            <span>Ⅱ</span> 일시정지
+            <GameIcon name="pause" size={16} /> 일시정지
           </button>
         )}
         {phase === 'paused' && (
           <button className="button button--run" type="button" onClick={onResume}>
-            <span>▶</span> 계속
+            <GameIcon name="play" size={17} /> 계속
           </button>
         )}
         <button
@@ -325,15 +339,18 @@ function RunControls({
           onClick={onStep}
           disabled={disabled || isAnimating}
         >
+          <GameIcon name="status" size={15} />
           다음 틱
         </button>
       </div>
       <div className="run-controls__secondary">
         <button type="button" onClick={onRestart} disabled={disabled || !hasStarted}>
-          ↻ 처음부터
+          <GameIcon name="reset" size={13} />
+          처음부터
         </button>
         <button type="button" onClick={onEdit} disabled={!hasStarted}>
-          ✎ 실행 중지
+          <GameIcon name="edit" size={13} />
+          실행 중지
         </button>
         <button type="button" onClick={onSpeed}>
           속도 <b>×{speed}</b>
@@ -359,7 +376,9 @@ function ResultPanel({
   if (state.status === 'failed') {
     return (
       <section className="result-panel result-panel--failed">
-        <span className="result-panel__icon">!</span>
+        <span className="result-panel__icon">
+          <GameIcon name="warning" size={23} />
+        </span>
         <div>
           <span className="section-kicker">RUN STOPPED</span>
           <h3>{failureText(state.failureReason)}</h3>
@@ -411,7 +430,9 @@ function ResultPanel({
       <div className="star-checks">
         {starChecks.map((check) => (
           <span className={check.earned ? 'star-checks__earned' : ''} key={check.label}>
-            <i>{check.earned ? '★' : '☆'}</i>
+            <i>
+              <GameIcon name="star" size={13} />
+            </i>
             {check.label}
           </span>
         ))}
@@ -422,7 +443,8 @@ function ResultPanel({
         </button>
         {onNext && (
           <button className="button button--primary" type="button" onClick={onNext}>
-            다음 스테이지 →
+            다음 스테이지
+            <GameIcon name="arrow-right" size={16} />
           </button>
         )}
       </div>
@@ -470,7 +492,8 @@ function GameScreen({
     <section className="game-screen">
       <div className="game-breadcrumb">
         <button type="button" onClick={onBack}>
-          ← 스테이지 선택
+          <GameIcon name="arrow-left" size={15} />
+          스테이지 선택
         </button>
         <span>튜토리얼 {String(stage.number).padStart(2, '0')} / 05</span>
       </div>
@@ -525,7 +548,10 @@ function GameScreen({
 
           <div className="status-console" role="status" aria-live="polite">
             <span className="status-console__icon">
-              {runner.phase === 'running' ? '↳' : runner.phase === 'failed' ? '!' : '•'}
+              <GameIcon
+                name={runner.phase === 'failed' ? 'warning' : 'status'}
+                size={18}
+              />
             </span>
             <div>
               <span>STATUS · TICK {runner.engine.tick}</span>
@@ -568,7 +594,9 @@ function GameScreen({
 
           <details className="guide-card" open>
             <summary>
-              <span>?</span>
+              <span>
+                <GameIcon name="help" size={14} />
+              </span>
               이번 스테이지 힌트
             </summary>
             <div>

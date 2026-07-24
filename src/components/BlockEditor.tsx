@@ -23,6 +23,7 @@ import {
   updateContainer,
   type ContainerId,
 } from '../editor/blockTree';
+import { GameIcon } from './GameIcons';
 
 type BlockEditorProps = {
   stage: Stage;
@@ -247,7 +248,7 @@ function BlockActions({
         aria-label="블록 위로 이동"
         title="위로"
       >
-        ↑
+        <GameIcon name="arrow-up" size={13} />
       </button>
       <button
         type="button"
@@ -256,7 +257,7 @@ function BlockActions({
         aria-label="블록 아래로 이동"
         title="아래로"
       >
-        ↓
+        <GameIcon name="arrow-down" size={13} />
       </button>
       <button
         type="button"
@@ -265,7 +266,7 @@ function BlockActions({
         aria-label="블록 복제"
         title="남은 같은 블록이 있을 때 복제"
       >
-        ⧉
+        <GameIcon name="copy" size={12} />
       </button>
       <button
         className="block-actions__delete"
@@ -275,7 +276,7 @@ function BlockActions({
         aria-label="블록 삭제"
         title="삭제"
       >
-        ×
+        <GameIcon name="close" size={13} />
       </button>
     </div>
   );
@@ -411,7 +412,13 @@ export function BlockEditor({
                 <strong>{offer.label}</strong>
                 <small>{offer.description}</small>
                 <span className="palette-card__action">
-                  {left > 0 ? '+ 추가' : '사용 중'}
+                  {left > 0 ? (
+                    <>
+                      <GameIcon name="add" size={11} /> 추가
+                    </>
+                  ) : (
+                    '사용 중'
+                  )}
                 </span>
               </button>
             );
@@ -441,7 +448,9 @@ export function BlockEditor({
 
         {blocks.length === 0 ? (
           <div className="empty-program">
-            <span>＋</span>
+            <span>
+              <GameIcon name="add" size={22} />
+            </span>
             <strong>아직 프로그램이 비어 있어요</strong>
             <p>위의 제공 블록을 눌러 첫 규칙을 추가하세요.</p>
           </div>
